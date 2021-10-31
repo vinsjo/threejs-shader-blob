@@ -14,6 +14,7 @@ const captionMaxCover = 0.8;
 const defaultFontSize = 24;
 const camPos = new THREE.Vector3(0, 0, 10);
 
+// VARIABLES
 let scene, camera, renderer, blob, stats, controls, letterRatio;
 let lastClickTime = 0,
 	runAnimation = true,
@@ -27,6 +28,7 @@ window.onload = () => {
 	initListeners();
 };
 
+// Initializes global variables, scene, renderer, camera, blob and updates window size
 function initScene() {
 	letterRatio =
 		defaultFontSize /
@@ -70,6 +72,7 @@ function initScene() {
 	appContainer.classList.add("show");
 }
 
+// Animate scene
 function animate() {
 	try {
 		runAnimation && requestAnimationFrame(animate);
@@ -83,6 +86,7 @@ function animate() {
 	}
 }
 
+// Initialize eventlisteners
 function initListeners() {
 	window.onresize = updateWindowSize;
 
@@ -125,8 +129,7 @@ function initListeners() {
 
 	window.onkeydown = (ev) => {
 		if (ev.key === " ") {
-			runAnimation = !runAnimation;
-			runAnimation && animate();
+			animateBlob = !animateBlob;
 		}
 		if (ev.key === "0") {
 			document.body.querySelector(`.${stats.dom.classList[0]}`)
@@ -143,6 +146,7 @@ function initListeners() {
 	};
 }
 
+// Calculate canvas size and ratio
 function getCanvasSize(windowSize) {
 	const w = windowSize ? windowSize : getWindowSize();
 	let rect;
@@ -167,6 +171,8 @@ function getCanvasSize(windowSize) {
 	};
 }
 
+// Update document body size to center content on mobile devices,
+// update projection and resize caption
 function updateWindowSize() {
 	const windowSize = getWindowSize();
 	document.body.width = windowSize.width;
@@ -185,6 +191,7 @@ function updateWindowSize() {
 	}
 }
 
+// Update camera position, control min and max distance and projection
 function updateProjection(canvasSize) {
 	if (!camera || !renderer) return;
 	const c = canvasSize ? canvasSize : getCanvasSize();
@@ -201,6 +208,7 @@ function updateProjection(canvasSize) {
 	renderer.setSize(c.width, c.height);
 }
 
+// Get window.innerWidth and window.innerHeight
 function getWindowSize() {
 	return {
 		width: window.innerWidth,
