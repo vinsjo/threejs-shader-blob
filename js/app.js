@@ -23,17 +23,18 @@ let lastClickTime = 0,
 	isDragging = false;
 
 window.onload = () => {
-	initScene();
-	animate();
-	initListeners();
-};
-
-// Initializes global variables, scene, renderer, camera, blob and updates window size
-function initScene() {
 	letterRatio =
 		defaultFontSize /
 		(caption.getBoundingClientRect().width / caption.innerText.length);
 	updateWindowSize();
+	initScene();
+	animate();
+	initListeners();
+	appContainer.classList.add("show");
+};
+
+// Initializes global variables, scene, renderer, camera, blob and updates window size
+function initScene() {
 	const canvasSize = getCanvasSize();
 	scene = new THREE.Scene();
 	renderer = new THREE.WebGLRenderer({
@@ -69,7 +70,6 @@ function initScene() {
 	updateProjection(canvasSize);
 
 	appContainer.appendChild(renderer.domElement);
-	appContainer.classList.add("show");
 }
 
 // Animate scene
