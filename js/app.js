@@ -1,14 +1,15 @@
 "use strict";
 import * as THREE from "https://threejs.org/build/three.module.js";
-import {OrbitControls} from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 import Stats from "https://threejs.org/examples/jsm/libs/stats.module.js";
+import {OrbitControls} from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
+import {getCanvasSize, containDocumentBody} from "./modules/Utils.js";
 import BlobSphere from "./modules/BlobSphere.js";
 
 // CONSTANTS
 const caption = document.querySelector(".app-caption");
 const appContainer = document.querySelector(".app");
 
-const canvasFullSize = true;
+const canvasFillScreen = true;
 const canvasMaxCover = 1;
 const captionMaxCover = 0.8;
 const defaultFontSize = 24;
@@ -30,12 +31,15 @@ window.onload = () => {
 	initScene();
 	animate();
 	initListeners();
-	appContainer.classList.add("show");
 };
 
 // Initializes global variables, scene, renderer, camera, blob and updates window size
 function initScene() {
-	const canvasSize = getCanvasSize();
+	const canvasSize = getCanvasSize(
+		appContainer,
+		canvasFillScreen,
+		canvasMaxCover
+	);
 	scene = new THREE.Scene();
 	renderer = new THREE.WebGLRenderer({
 		antialias: true,
@@ -47,13 +51,34 @@ function initScene() {
 
 	blob = new BlobSphere({
 		randomLimits: {
-			scale: {min: 0.8, max: 1.05},
-			colorMultiplier: {min: 0.25, max: 1},
-			lightThreshold: {min: 0.015, max: 0.45},
-			frequency: {min: 1.5, max: 6},
-			amplitude: {min: 0.1, max: 2.5},
-			distortionSpeed: {min: 0.005, max: 0.03},
-			rotationSpeed: {min: -0.003, max: 0.003},
+			scale: {
+				min: 0.8,
+				max: 1.05,
+			},
+			colorMultiplier: {
+				min: 0.25,
+				max: 1,
+			},
+			lightThreshold: {
+				min: 0.015,
+				max: 0.45,
+			},
+			frequency: {
+				min: 1.5,
+				max: 6,
+			},
+			amplitude: {
+				min: 0.1,
+				max: 2.5,
+			},
+			distortionSpeed: {
+				min: 0.005,
+				max: 0.03,
+			},
+			rotationSpeed: {
+				min: -0.003,
+				max: 0.003,
+			},
 		},
 		randomize: true,
 	});
@@ -70,6 +95,7 @@ function initScene() {
 	updateProjection(canvasSize);
 
 	appContainer.appendChild(renderer.domElement);
+	appContainer.classList.add("show");
 }
 
 // Animate scene
@@ -146,40 +172,11 @@ function initListeners() {
 	};
 }
 
-// Calculate canvas size and ratio
-function getCanvasSize(windowSize) {
-	const w = windowSize ? windowSize : getWindowSize();
-	let rect;
-	if (!appContainer) {
-		rect = w;
-	} else {
-		rect = appContainer.getBoundingClientRect();
-		if (rect.width != w.width || rect.height != w.height) {
-			appContainer.height = w.width;
-			appContainer.width = w.height;
-			rect = appContainer.getBoundingClientRect();
-		}
-	}
-	const width = canvasFullSize
-		? rect.width * canvasMaxCover
-		: Math.min(rect.width, rect.height) * canvasMaxCover;
-	const height = canvasFullSize ? rect.height * canvasMaxCover : width;
-	return {
-		width: width,
-		height: height,
-		ratio: width / height,
-	};
-}
-
 // Update document body size to center content on mobile devices,
 // update projection and resize caption
 function updateWindowSize() {
-	const windowSize = getWindowSize();
-	document.body.width = windowSize.width;
-	document.body.height = windowSize.height;
-	document.body.style.width = windowSize.width + "px";
-	document.body.style.height = windowSize.height + "px";
-	const c = getCanvasSize(windowSize);
+	containDocumentBody();
+	const c = getCanvasSize(appContainer, canvasFillScreen, canvasMaxCover);
 	updateProjection(c);
 	if (caption && caption.innerText) {
 		const letterWidth =
@@ -194,10 +191,12 @@ function updateWindowSize() {
 // Update camera position, control min and max distance and projection
 function updateProjection(canvasSize) {
 	if (!camera || !renderer) return;
-	const c = canvasSize ? canvasSize : getCanvasSize();
+	const c = canvasSize
+		? canvasSize
+		: getCanvasSize(appContainer, canvasFillScreen, canvasMaxCover);
 	if (camPos) {
 		camera.position.z = camPos.z / THREE.MathUtils.clamp(c.ratio, 0, 1);
-		camera.lookAt(blob ? blob.mesh.position : new THREE.Vector3(0, 0, 0));
+		camera.lookAt(0, 0, 0);
 		if (controls) {
 			controls.maxDistance = camera.position.z * 1.5;
 			controls.minDistance = camera.position.z * 0.75;
@@ -206,12 +205,4 @@ function updateProjection(canvasSize) {
 	camera.aspect = c.ratio;
 	camera.updateProjectionMatrix();
 	renderer.setSize(c.width, c.height);
-}
-
-// Get window.innerWidth and window.innerHeight
-function getWindowSize() {
-	return {
-		width: window.innerWidth,
-		height: window.innerHeight,
-	};
 }
