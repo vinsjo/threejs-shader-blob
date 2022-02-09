@@ -1,13 +1,14 @@
-"use strict";
-import * as THREE from "https://threejs.org/build/three.module.js";
-import Stats from "https://threejs.org/examples/jsm/libs/stats.module.js";
-import {OrbitControls} from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
-import {getCanvasSize, containDocumentBody} from "./modules/Utils.js";
-import BlobSphere from "./modules/BlobSphere.js";
+'use strict';
+
+import * as THREE from 'three';
+import Stats from 'three/examples/jsm/libs/stats.module';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { getCanvasSize, containDocumentBody } from './modules/Utils';
+import BlobSphere from './modules/BlobSphere';
 
 // CONSTANTS
-const caption = document.querySelector(".app-caption");
-const appContainer = document.querySelector(".app");
+const caption = document.querySelector('.app-caption');
+const appContainer = document.querySelector('.app');
 
 const canvasFillScreen = true;
 const canvasMaxCover = 1;
@@ -47,7 +48,7 @@ function initScene() {
 	});
 	camera = new THREE.PerspectiveCamera(13, canvasSize.ratio, 0.1, 1000);
 	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.domElement.classList.add("grab");
+	renderer.domElement.classList.add('grab');
 
 	blob = new BlobSphere({
 		randomLimits: {
@@ -90,12 +91,12 @@ function initScene() {
 	controls.enableDamping = true;
 
 	stats = new Stats();
-	stats.dom.classList.add("stats-display");
+	stats.dom.classList.add('stats-display');
 
 	updateProjection(canvasSize);
 
 	appContainer.appendChild(renderer.domElement);
-	appContainer.classList.add("show");
+	appContainer.classList.add('show');
 }
 
 // Animate scene
@@ -107,7 +108,7 @@ function animate() {
 		stats && stats.update();
 		controls && controls.update();
 	} catch (e) {
-		console.error(e, "stopping execution....");
+		console.error(e, 'stopping execution....');
 		runAnimation = false;
 	}
 }
@@ -120,7 +121,7 @@ function initListeners() {
 		ScreenOrientation.onchange = window.onresize;
 	} catch (e) {
 		console.error(
-			"Screen Orientation API not available in this browser..."
+			'Screen Orientation API not available in this browser...'
 		);
 	}
 
@@ -128,21 +129,21 @@ function initListeners() {
 		pointerDown = true;
 	};
 
-	window.onpointermove = (ev) => {
+	window.onpointermove = ev => {
 		isDragging = pointerDown;
 		if (ev.target === renderer.domElement) {
 			if (isDragging) {
 				!runAnimation && animate();
-				!renderer.domElement.classList.contains("grabbing") &&
-					renderer.domElement.classList.add("grabbing");
+				!renderer.domElement.classList.contains('grabbing') &&
+					renderer.domElement.classList.add('grabbing');
 			} else {
-				renderer.domElement.classList.contains("grabbing") &&
-					renderer.domElement.classList.remove("grabbing");
+				renderer.domElement.classList.contains('grabbing') &&
+					renderer.domElement.classList.remove('grabbing');
 			}
 		}
 	};
 
-	window.onpointerup = window.onpointerleave = (ev) => {
+	window.onpointerup = window.onpointerleave = ev => {
 		if (!isDragging) {
 			ev.target === renderer.domElement && (animateBlob = !animateBlob);
 			if (ev.target === caption && Date.now() - lastClickTime > 200) {
@@ -153,18 +154,18 @@ function initListeners() {
 		isDragging = pointerDown = false;
 	};
 
-	window.onkeydown = (ev) => {
-		if (ev.key === " ") {
+	window.onkeydown = ev => {
+		if (ev.key === ' ') {
 			animateBlob = !animateBlob;
 		}
-		if (ev.key === "0") {
+		if (ev.key === '0') {
 			document.body.querySelector(`.${stats.dom.classList[0]}`)
 				? stats.dom.remove()
 				: document.body.appendChild(stats.dom);
 		}
 	};
 
-	window.oncontextmenu = (ev) => {
+	window.oncontextmenu = ev => {
 		if (!(ev instanceof MouseEvent) || ev.button === 0) {
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -184,7 +185,7 @@ function updateWindowSize() {
 			caption.innerText.length;
 		const fontSize = Math.floor(letterRatio * letterWidth);
 		caption.style.fontSize =
-			Math.min(fontSize, c.height * captionMaxCover) + "px";
+			Math.min(fontSize, c.height * captionMaxCover) + 'px';
 	}
 }
 

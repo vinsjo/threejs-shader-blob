@@ -1,11 +1,12 @@
-"use strict";
+'use strict';
 /**
  * @module ThreeUtils
  * @requires THREE
  */
-import * as THREE from "https://threejs.org/build/three.module.js";
 
-export {isV3, clampV3, randomV3};
+import * as THREE from 'three';
+
+export { isV3, clampV3, randomV3 };
 
 /**
  * Check if variable is a valid 3d vector
@@ -18,14 +19,14 @@ export {isV3, clampV3, randomV3};
  * and their values is of type "number"
  */
 function isV3(val) {
-	if (!val || typeof val !== "object") return false;
+	if (!val || typeof val !== 'object') return false;
 	return (
-		val.hasOwnProperty("x") &&
-		val.hasOwnProperty("y") &&
-		val.hasOwnProperty("z") &&
-		typeof val.x === "number" &&
-		typeof val.y === "number" &&
-		typeof val.z === "number"
+		val.hasOwnProperty('x') &&
+		val.hasOwnProperty('y') &&
+		val.hasOwnProperty('z') &&
+		typeof val.x === 'number' &&
+		typeof val.y === 'number' &&
+		typeof val.z === 'number'
 	);
 }
 

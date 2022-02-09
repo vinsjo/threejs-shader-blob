@@ -1,23 +1,19 @@
-"use strict";
-/**
- * @module BlobSphere
- * @requires THREE
- * @requires BlobShader
- * @requires ThreeUtils
- */
-import * as THREE from "https://threejs.org/build/three.module.js";
-import {isV3, clampV3, randomV3} from "./ThreeUtils.js";
-import * as BlobShader from "./BlobShader.js";
+'use strict';
+
+import * as THREE from 'three';
+import { isV3, clampV3, randomV3 } from './ThreeUtils';
+import * as BlobShader from './BlobShader';
+
 export default class BlobSphere {
 	static get DEFAULT_RANDOM_LIMITS() {
 		return {
-			scale: {min: 0.75, max: 1.25},
-			colorMultiplier: {min: 0, max: 1},
-			lightThreshold: {min: 0.25, max: 1.0},
-			frequency: {min: 1, max: 6},
-			amplitude: {min: 1, max: 3},
-			distortionSpeed: {min: 0.005, max: 0.05},
-			rotationSpeed: {min: -0.05, max: 0.05},
+			scale: { min: 0.75, max: 1.25 },
+			colorMultiplier: { min: 0, max: 1 },
+			lightThreshold: { min: 0.25, max: 1.0 },
+			frequency: { min: 1, max: 6 },
+			amplitude: { min: 1, max: 3 },
+			distortionSpeed: { min: 0.005, max: 0.05 },
+			rotationSpeed: { min: -0.05, max: 0.05 },
 		};
 	}
 	#currentFrame;
@@ -29,15 +25,15 @@ export default class BlobSphere {
 			? options.rotationSpeed
 			: new THREE.Vector3(0, 0, 0);
 		this.#animationSpeed =
-			typeof options.animationSpeed === "number"
+			typeof options.animationSpeed === 'number'
 				? options.animationSpeed
 				: 1;
-		const shaderOpt = {...BlobShader.DEFAULT_OPTIONS};
-		if (options.shader && typeof options.shader === "object") {
+		const shaderOpt = { ...BlobShader.DEFAULT_OPTIONS };
+		if (options.shader && typeof options.shader === 'object') {
 			for (const k in shaderOpt) {
 				if (
 					!options.shader.hasOwnProperty[k] ||
-					("number" === typeof shaderOpt[k]) !== options.shader[k] ||
+					('number' === typeof shaderOpt[k]) !== options.shader[k] ||
 					(isV3(shaderOpt[k]) && !isV3(options.shader[k]))
 				) {
 					continue;
@@ -52,9 +48,9 @@ export default class BlobSphere {
 		}
 		this.mesh = new THREE.Mesh(
 			new THREE.SphereGeometry(
-				typeof options.radius === "number" ? options.radius : 1,
-				typeof options.segments === "number" ? options.segments : 64,
-				typeof options.rings === "number" ? options.rings : 32
+				typeof options.radius === 'number' ? options.radius : 1,
+				typeof options.segments === 'number' ? options.segments : 64,
+				typeof options.rings === 'number' ? options.rings : 32
 			),
 			BlobShader.shader(shaderOpt)
 		);
@@ -141,7 +137,7 @@ export default class BlobSphere {
 	}
 
 	get randomLimits() {
-		return {...this.#randomLimits};
+		return { ...this.#randomLimits };
 	}
 
 	//#endregion
@@ -168,7 +164,7 @@ export default class BlobSphere {
 	}
 
 	set alpha(num) {
-		if (typeof num !== "number") return;
+		if (typeof num !== 'number') return;
 		this.mesh.material.uniforms.uAlpha.value = THREE.MathUtils.clamp(
 			num,
 			0,
@@ -220,29 +216,29 @@ export default class BlobSphere {
 	}
 
 	set currentFrame(num) {
-		if (typeof num !== "number") return;
+		if (typeof num !== 'number') return;
 		this.#currentFrame = num;
 		this.mesh.material.uniforms.uTime.value = this.#currentFrame;
 	}
 
 	set animationSpeed(num) {
-		if (typeof num !== "number") return;
+		if (typeof num !== 'number') return;
 		this.#animationSpeed = num;
 	}
 
 	set randomLimits(limits) {
-		if (typeof limits !== "object") return;
+		if (typeof limits !== 'object') return;
 		if (!this.#randomLimits) {
 			this.#randomLimits = BlobSphere.DEFAULT_RANDOM_LIMITS;
 		}
 		for (const k in this.#randomLimits) {
 			if (
 				!limits[k] ||
-				typeof limits[k] !== "object" ||
-				!limits[k].hasOwnProperty("min") ||
-				!limits[k].hasOwnProperty("max") ||
-				typeof limits[k]["min"] !== "number" ||
-				typeof limits[k]["max"] !== "number"
+				typeof limits[k] !== 'object' ||
+				!limits[k].hasOwnProperty('min') ||
+				!limits[k].hasOwnProperty('max') ||
+				typeof limits[k]['min'] !== 'number' ||
+				typeof limits[k]['max'] !== 'number'
 			) {
 				continue;
 			}

@@ -1,12 +1,7 @@
-"use strict";
-/**
- * @module BlobShader
- * @requires THREE
- * @requires ThreeUtils
- */
+'use strict';
 
-import * as THREE from "https://threejs.org/build/three.module.js";
-import {isV3} from "./ThreeUtils.js";
+import * as THREE from 'three';
+import { isV3 } from './ThreeUtils.js';
 
 const DEFAULT_OPTIONS = {
 	alpha: 1.0,
@@ -15,25 +10,25 @@ const DEFAULT_OPTIONS = {
 	amplitude: new THREE.Vector3(0.2, 0.2, 0.2),
 	distSpeed: new THREE.Vector3(0.05, 0.05, 0.05),
 	colorMultiplier: new THREE.Vector3(1.0, 1.0, 1.0),
-	colorNormals: {x: "x", y: "y", z: "z"},
+	colorNormals: { x: 'x', y: 'y', z: 'z' },
 };
 
-export {DEFAULT_OPTIONS, frag_shader, vert_shader, uniforms, shader};
+export { DEFAULT_OPTIONS, frag_shader, vert_shader, uniforms, shader };
 
 function shader(options) {
 	const opt = options ? options : DEFAULT_OPTIONS;
 	return new THREE.ShaderMaterial({
 		uniforms: uniforms(opt),
 		vertexShader: vert_shader(
-			{x: "y", y: "z", z: "x"},
-			{x: "z", y: "x", z: "y"}
+			{ x: 'y', y: 'z', z: 'x' },
+			{ x: 'z', y: 'x', z: 'y' }
 		),
 		fragmentShader: frag_shader(),
 	});
 }
 
 function uniforms(options) {
-	const opt = options ? {...options} : {...DEFAULT_OPTIONS};
+	const opt = options ? { ...options } : { ...DEFAULT_OPTIONS };
 	return {
 		uTime: {
 			value: opt.time ? opt.time : 0.0,
@@ -83,24 +78,24 @@ function vert_shader(positionVector, normalVector) {
     
             vec3 distortion = vec3(
 				sin(positionVec4.${
-					positionVector.x ? positionVector.x : "x"
+					positionVector.x ? positionVector.x : 'x'
 				} * uFrequency.x + uTime * uDistSpeed.x),
 				sin(positionVec4.${
-					positionVector.y ? positionVector.y : "y"
+					positionVector.y ? positionVector.y : 'y'
 				} * uFrequency.y + uTime * uDistSpeed.y),
 				sin(positionVec4.${
-					positionVector.z ? positionVector.z : "z"
+					positionVector.z ? positionVector.z : 'z'
 				} * uFrequency.z + uTime * uDistSpeed.z)
             );
     
             positionVec4.x += distortion.x * normal.${
-				normalVector.x ? normalVector.x : "x"
+				normalVector.x ? normalVector.x : 'x'
 			} * uAmplitude.x;
 			positionVec4.y += distortion.y * normal.${
-				normalVector.y ? normalVector.y : "y"
+				normalVector.y ? normalVector.y : 'y'
 			} * uAmplitude.y;
 			positionVec4.z += distortion.z * normal.${
-				normalVector.z ? normalVector.z : "z"
+				normalVector.z ? normalVector.z : 'z'
 			} * uAmplitude.z;
     
             gl_Position = projectionMatrix * modelViewMatrix * positionVec4;

@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 /**
  * @module Utils
  * @requires MathUtils
  */
-import {constrain} from "./MathUtils.js";
-export {getWindowSize, getCanvasSize, containDocumentBody};
+import { constrain } from './MathUtils';
+export { getWindowSize, getCanvasSize, containDocumentBody };
 
 function getWindowSize() {
 	return {
@@ -17,8 +17,8 @@ function containDocumentBody(windowSize) {
 	const w = windowSize ? windowSize : getWindowSize();
 	document.body.width = w.width;
 	document.body.height = w.height;
-	document.body.style.width = w.width + "px";
-	document.body.style.height = w.height + "px";
+	document.body.style.width = w.width + 'px';
+	document.body.style.height = w.height + 'px';
 }
 
 function getCanvasSize(appContainer, canvasFillScreen, canvasMaxCover = 1) {
